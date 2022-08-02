@@ -24,24 +24,5 @@ tar -xvzf v2.2.2.tar.gz
 # Change into the top level of the Alphafold source tree
 cd alphafold-2.2.2
 
-# Copy code that includes the Singularity build
-# instructions. Alphafold supports Docker build
-# instructions, i.e. a Dockerfile, but here we need
-# to use Singularity.def, which is translated
-# from the Dockerfile with Singularity-specific
-# build instructions.
-git clone https://github.com/prehensilecode/alphafold_singularity singularity
-
 # Build
-# (Note that before building, you'll need to install
-# the requirements.txt
-# from prehensilecode/alphafold_singularity in your
-# build environment first, e.g.
-# module load conda3
-# source /gs/gsfs0/.../etc/profile.d/conda.sh
-# conda create env -p $HOME/alphafold_run --file requirements.txt
-# conda activate $HOME/alphafold_run
-# That step is not scripted here since the
-# corresponding Conda environment may
-# already exist and only needs to be created once.
-sudo singularity build alphafold.sif singularity/Singularity.def
+sudo singularity build alphafold.sif ../Singularity.def
