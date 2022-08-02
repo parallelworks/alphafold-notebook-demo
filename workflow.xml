@@ -1,0 +1,16 @@
+<tool id='alphafold_notebook_demo' name='alphafold_notebook_demo'>
+  <command interpreter='parsl-nb'>main.ipynb</command>
+  <inputs>
+    <section name='geometry' type='section' title='Runtime Parameters' expanded='true'>
+      <param name='npart' label='Number of Particles' type='text' value='25:50:25' width='50%' help='Whitespace delimited or range/step (e.g. min:max:step)' argument='input'></param>
+      <param name='steps' label='Timesteps' type='text' value='3000:6000:3000' width='50%' help='Whitespace delimited or range/step (e.g. min:max:step)' argument='input'></param>
+      <param name='mass' label='Particle Mass' type='text' value='0.01:0.02:0.01' width='50%' help='Whitespace delimited or range/step (e.g. min:max:step)' argument='input'></param>
+      <param name='trsnaps' label='Frames' type='text' value='5:10:5' width='50%' help='Whitespace delimited or range/step (e.g. min:max:step)' argument='input'></param>
+    </section>
+    <param name='casename' label='Case Name' type='text' value='MD-Lite-Sweep' width='30%_none'></param>
+  </inputs>
+  <outputs>
+    <data name='csv' format='csv' label='${casename}-CSV'></data>
+    <data name='html' format='html' label='${casename}-HTML'></data>
+  </outputs>
+</tool>
