@@ -80,6 +80,9 @@ patch -p0 < /app/alphafold/docker/openmm.patch
 # Add SETUID bit to the ldconfig binary so that non-root users can run it.
 chmod u+s /sbin/ldconfig.real
 
+# Grant all users permission to read/execute in /apps/alphafold
+chmod a+rx --recursive /apps/alphafold
+
 %environment
 export PATH="/opt/conda/bin:$PATH"
 %runscript
