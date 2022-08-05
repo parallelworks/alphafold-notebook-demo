@@ -1,11 +1,20 @@
 # alphafold-notebook-demo
 Demonstration workflow with Alphafold in a Jupyter notebook
 
-WORKING HERE: Testing setup run env
-srun -n 1 -c 8 -p gpu --pty --mem=20GB --time=01:00:00 /bin/bash
-conda create -y -p /gs/gsfs0/users/gstefan/work/alphafold/run -c conda-forge absl-py==0.13.0
-conda create -p /gs/gsfs0/users/gstefan/work/alphafold/env --clone /gs/gsfs0/users/gstefan/work/alphafold/run
+## Example for starting up an interactive session on a worker node
+
+In the example below, please replace your username for `gstefan`.
+These steps will create a new, local, Conda environment.
+```bash
+srun -n 1 -c 16 -p gpu --pty --mem=120GB --time=12:00:00 /bin/bash
+module load conda3
 source /gs/gsfs0/hpc01/rhel8/apps/conda3/etc/profile.d/conda.sh
+conda create -y -p /gs/gsfs0/users/gstefan/work/alphafold/env -c conda-forge absl-py==0.13.0 spython=0.1.16
+conda activate /gs/gsfs0/users/gstefan/work/alphafold/env
+```
+
+**TODO:** Add Parsl and Jupyter kernel packages to the
+Conda environment for workflow integration.
 
 # Command to start container, but this fails due to some
 # strange subprocess issue that doesn't allow singularity

@@ -10,7 +10,7 @@ singularity exec --nv \
     --env="XLA_PYTHON_CLIENT_MEM_FRACTION=4.0" \
     --env="OPENMM_CPU_THREADS=16" \
     --env="MAX_CPUS=16" \
-    /gs/gsfs0/users/gstefan/work/alphafold/alphafold.sif \
+    /public/apps/alphafold/alphafold.sif \
     /app/alphafold/run_alphafold.py \
     --fasta_paths=/gs/gsfs0/users/gstefan/work/alphafold/mnt/fasta_path_0/all0174_0.fasta \
     --uniref90_database_path=/gs/gsfs0/users/gstefan/work/alphafold/mnt/uniref90_database_path/uniref90.fasta \
