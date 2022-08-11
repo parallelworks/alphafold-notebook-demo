@@ -21,13 +21,29 @@ Here, I only changed the path of the Alphafold container
 used by this launch script.  I also tried to modify
 the default output directory, but this did not work
 and output is still sent to `/tmp` on the worker node.
-An example invocation of this launcher is (where `\` is
-line continuation for readability):
+
+An example interactive session that uses this launcher is
+(where `\` is line continuation for readability):
 ```bash
+# Start up interactive session on a worker node
+srun -n 1 -c 16 -p gpu --pty --mem=120GB --time=12:00:00 /bin/bash
+
+# Load the conda environment
+module load conda3
+source /gs/gsfs0/hpc01/rhel8/apps/conda3/etc/profile.d/conda.sh
+conda activate /gs/gsfs0/users/gstefan/work/alphafold/env
+
+# Run the container
 python run_singularity.py --data_dir=/public/apps/alphafold/databases \
   --fasta_paths=/gs/gsfs0/users/gstefan/work/alphafold/input/all0174_0.fasta \
   --max_template_date=2022-07-22
 ```
+
+Note that in order to run this Python container launch script,
+you will need to install the packages in `requirements.txt`
+in your Python environment. More detailed instructions for this
+are in the top-level `README.md` since these packages are also
+required for the workflow.
 
 ## Future plans
 

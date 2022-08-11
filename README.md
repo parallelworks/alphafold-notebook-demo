@@ -1,20 +1,30 @@
 # alphafold-notebook-demo
 Demonstration workflow with Alphafold in a Jupyter notebook
 
-## Example for starting up an interactive session on a worker node
+## Setup
 
-In the example below, please replace your username for `gstefan`.
-These steps will create a new, local, Conda environment.
+The following components are necessary for setting up this workflow:
+1. An Alphafold Singularity container.  Please see instructions in `./container` for how to build an Alphafold container. Currently, it is assumed that this container is available at a **hard coded path** in `./container/run_singularity_container.py` in this line of code:
 ```bash
-srun -n 1 -c 16 -p gpu --pty --mem=120GB --time=12:00:00 /bin/bash
-module load conda3
-source /gs/gsfs0/hpc01/rhel8/apps/conda3/etc/profile.d/conda.sh
-conda create -y -p /gs/gsfs0/users/gstefan/work/alphafold/env -c conda-forge absl-py==0.13.0 spython=0.1.16
-conda activate /gs/gsfs0/users/gstefan/work/alphafold/env
+singularity_image = Client.load('/public/apps/alphafold/alphafold.sif')
 ```
 
-**TODO:** Add Parsl and Jupyter kernel packages to the
-Conda environment for workflow integration.
+2. A Conda (or pip) environment that has the `absl-py` and `spython` packages to launch the container. This workflow also uses `parsl` (but it is not required for using the container itself). For a cluster with Conda in a module, here is an example for how to create a local environment:
+```bash
+module load conda3
+source /gs/gsfs0/hpc01/rhel8/apps/conda3/etc/profile.d/conda.sh
+conda create -y -p /gs/gsfs0/users/gstefan/work/alphafold/env -c conda-forge absl-py==0.13.0 spython=0.1.16 parsl
+conda activate /gs/gsfs0/users/gstefan/work/alphafold/env
+```
+where `/gs/gsfs0/users/gstefan/` is your home directory.
+
+3. Pull this workflow code into your PW environment.
+**TODO: Add instructions here.**
+
+4. Run the workflow from PW.
+**TODO: Add instructions here.**
+
+## Old documentation below, probably can be deleted.
 
 # Command to start container, but this fails due to some
 # strange subprocess issue that doesn't allow singularity
