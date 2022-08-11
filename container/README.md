@@ -1,8 +1,8 @@
 # Building an Alphafold Singularity container
 
-The `Singularity.def` definition file and the `run_singularity.sh`
-launch script is liscensed under Apache 2.0
-based on the work of [David Chin at Drexel University](https://github.com/prehensilecode/alphafold_singularity.git).
+The `Singularity.def` definition file and the `run_singularity_container.sh`
+launch script are liscensed under Apache 2.0
+based on the work of the original Alphafold authors and [David Chin at Drexel University](https://github.com/prehensilecode/alphafold_singularity.git).
 
 ## Changes in `Singularity.def`
 
@@ -11,7 +11,7 @@ command so that the resulting binaries are compatible with
 Intel and AMD CPUS according to this
 [post](https://github.com/soedinglab/hh-suite/issues/282).
 I do not know if there are performance implications due 
-to this change. `build_container.sh` automates the steps
+to this change. `build_singularity_container.sh` automates the steps
 for including the Alphafold source code and building
 the container.
 
