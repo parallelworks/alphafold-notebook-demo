@@ -26,16 +26,18 @@ from absl import logging
 import tempfile
 from spython.main import Client
 
+print("Starting run_singularity_container.py")
+
 #### USER CONFIGURATION ####
 
 # Path to AlphaFold Singularity image.
 singularity_image = Client.load('/public/apps/alphafold/alphafold.sif')
 
 # Path to a directory that will store the results.
-if 'TMPDIR' in os.environ:
-    output_dir = os.environ['TMPDIR']
-else:
-    output_dir = tempfile.mkdtemp(dir='/gs/gsfs0/users/gstefan/work/', prefix='alphafold-')
+#if 'TMPDIR' in os.environ:
+#    output_dir = os.environ['TMPDIR']
+#else:
+#    output_dir = tempfile.mkdtemp(dir='/gs/gsfs0/users/gstefan/work/', prefix='alphafold-')
 
 # Path to directory that holds databases.
 #data_dir = '/public/apps/alphafold/databases'
@@ -63,7 +65,7 @@ flags.DEFINE_list(
     'separated by commas. All FASTA paths must have a unique basename as the '
     'basename is used to name the output directories for each prediction.')
 flags.DEFINE_string(
-    'output_dir', '/tmp/alphafold',
+    'output_dir', '/tmp',
     'Path to a directory that will store the results.')
 flags.DEFINE_string(
     'data_dir', None,
@@ -111,7 +113,6 @@ flags.DEFINE_string(
 FLAGS = flags.FLAGS
 
 _ROOT_MOUNT_DIRECTORY = '/mnt/'
-
 
 def _create_bind(bind_name: str, path: str) -> Tuple[str, str]:
   path = os.path.abspath(path)
@@ -221,6 +222,8 @@ def main(argv):
       binds.append(bind)
       command_args.append(f'--{name}={target_path}')
 
+  # Grab output_dir from command line flag (or default value!)
+  output_dir = pathlib.Path(FLAGS.output_dir)
   output_target_path = os.path.join(_ROOT_MOUNT_DIRECTORY, 'output')
   binds.append(f'{output_dir}:{output_target_path}')
 
@@ -243,7 +246,9 @@ def main(argv):
     '--bind', f'{",".join(binds)}',
     '--env', 'TF_FORCE_UNIFIED_MEMORY=1',
     '--env', 'XLA_PYTHON_CLIENT_MEM_FRACTION=4.0',
-    '--env', 'OPENMM_CPU_THREADS=12'
+    '--env', 'OPENMM_CPU_THREADS='+os.environ['SLURM_JOB_CPUS_PER_NODE'],
+    '--env', "NVIDIA_VISIBLE_DEVICES=all",
+    '--env', "MAX_CPUS="+os.environ['SLURM_JOB_CPUS_PER_NODE']
   ]
 
   # Run the container.
@@ -256,7 +261,6 @@ def main(argv):
              return_result=True,
              options=options
            )
-
 
 if __name__ == '__main__':
   flags.mark_flags_as_required([

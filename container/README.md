@@ -17,10 +17,19 @@ the container.
 
 ## Changes to `run_singularity.py`
 
-Here, I only changed the path of the Alphafold container
-used by this launch script.  I also tried to modify
-the default output directory, but this did not work
-and output is still sent to `/tmp` on the worker node.
+Here, the path of the Alphafold container used by this
+launch script was changed. The commands that automate the
+setting of `output_dir` were removed to allow the user
+explicit access to this option because it is useful when
+using precomputed MSAS. The default output directory is
+still sent to `/tmp` on the worker node.
+
+Another change was to add the MAX_CPUS environment variable
+which, based on the work of [Diego Alvarez at the University of Magallanes](https://github.com/dialvarezs/alphafold.git) one path for setting the number of CPUs used by
+`hhsearch`, `hhblits`, and `jackhmmer` (all in
+`/app/alphafold/alphafold/data/tools` in the container). Passing
+this environment variable to those tools is not yet implemented
+and will require rebuilding the container or an overlay.
 
 An example interactive session that uses this launcher is
 (where `\` is line continuation for readability):
@@ -36,6 +45,7 @@ conda activate /gs/gsfs0/users/gstefan/work/alphafold/env
 # Run the container
 python run_singularity.py --data_dir=/public/apps/alphafold/databases \
   --fasta_paths=/gs/gsfs0/users/gstefan/work/alphafold/input/all0174_0.fasta \
+  --output_dir=/gs/gsfs0/users/gstefan/work/alphafold/output
   --max_template_date=2022-07-22
 ```
 
@@ -44,6 +54,12 @@ you will need to install the packages in `requirements.txt`
 in your Python environment. More detailed instructions for this
 are in the top-level `README.md` since these packages are also
 required for the workflow.
+
+Also, note that the optional `--output_dir` flag for
+`run_singularity_container.py` **must list a directory that already
+exists**.  If this flag is not included, the output
+files are written to the default location, `/tmp`, which is
+only on the worker node and not avaiable on other computers.
 
 ## Future plans
 
