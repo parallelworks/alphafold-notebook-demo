@@ -47,22 +47,66 @@ python run_singularity.py --data_dir=/public/apps/alphafold/databases \
   --fasta_paths=/gs/gsfs0/users/gstefan/work/alphafold/input/all0174_0.fasta \
   --output_dir=/gs/gsfs0/users/gstefan/work/alphafold/output
   --max_template_date=2022-07-22
+  --use_precomputed_msas=True
 ```
 
-Note that in order to run this Python container launch script,
+Notes
+
+1. In order to run this Python container launch script,
 you will need to install the packages in `requirements.txt`
 in your Python environment. More detailed instructions for this
 are in the top-level `README.md` since these packages are also
 required for the workflow.
 
-Also, note that the optional `--output_dir` flag for
-`run_singularity_container.py` **must list a directory that already
-exists**.  If this flag is not included, the output
-files are written to the default location, `/tmp`, which is
-only on the worker node and not avaiable on other computers.
+2. The optional `--output_dir` flag for `run_singularity_container.py`
+**must list a directory that already exists**.  If this flag
+is not included, the output files are written to the default
+location, `/tmp`, which is only on the worker node and not avaiable
+on other computers.
+
+3. The optional `--use_precomputed_msas=True` flag allows
+Alphafold to skip directly to the GPU intensive step of
+predicting the folding with the machine learning model.
+Alphafold will look for **existing** files in `--output_dir`.
+For example, if running with `all0174_0.fasta`, as in the
+example above, Alphafold will look in
+`/gs/gsfs0/users/gstefan/work/alphafold/output/all0174_0/msas`
+for the following three files: `uniref90_hits.sto`,
+`mgnify_hits.sto`, and `bfd_uniclust_hits.a3m` and also
+possibly `pdb_hits.hhr`.
+
+4. The protein basename (`all0174_0`) is used to keep protein
+output files separate from each other within the main `output_dir`.
+The directory with this protein basename is created if
+`--use_precomputed_msas=False` as is the `msas` subdirectory and
+its contents.  Otherwise, Alphafold will get the MSAS from the
+existing output directory.
 
 ## Future plans
 
-In the future, I would like to update the base image from ubuntu
-18 to 20 (or 22 when available) and CUDA runtime form 11.1 to 11.2
+In the future, I would like to:
+
+1. Update the base image from ubuntu
+18 to 20 (or 22 when available) and CUDA runtime from 11.1 to 11.2
 as in the work of [Diego Alvarez at the University of Magallanes](https://github.com/dialvarezs/alphafold.git).
+2. Merge in the specification of how many CPU can be used with
+the MSAS tools (hhblits, hhsearch, and jackhmmer).
+
+3. Test scaling of Alphafold: Alphafold can run multiple protiens
+at the same time on the same node. This gives users who want to run large 
+batches of proteins some options in terms of how they want to run
+Alphafold - many separate instances of Alphafold (i.e. with only
+one entry in `--fasta_paths`) or Alphafold instances that are running
+several proteins at the same time (i.e. multiple entries in
+`--fasta_paths`). I don't know which will be more efficient.  It could
+go either way, for example, running fully separate instances is probably
+more GPU efficient and the kernel buffer cache could help reduce
+bandwidth and I/O bottlenecks if there are multiple instances all
+accessing the same database. Also, it may be easier to keep track of
+runs if all protiens are in isolated jobs.  The drawback is that
+this approach is likely RAM inefficient (all jobs will allocate the
+full amount of RAM). On the other hand, there could be some
+RAM and I/O efficiencies internal to the Alphafold code that make
+things run faster when multiple proteins are run in the same instance
+than the aforementioned potential accelerators for only one protein in
+each instance.
