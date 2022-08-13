@@ -1,3 +1,3 @@
-~/pw/workflows/alphafold-notebook-demo/example/fasta_0/1UBQ.fasta
-~/pw/workflows/alphafold-notebook-demo/example/fasta_1/T1050.fasta
-~/pw/workflows/alphafold-notebook-demo/example/fasta_2/all0174_0.fasta
+example/fasta_0/1UBQ.fasta
+example/fasta_1/T1050.fasta
+example/fasta_2/all0174_0.fasta
