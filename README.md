@@ -46,3 +46,11 @@ and/or directly modify some of the Alphafold options that are not
 available in the workflow form. Jupyter notebooks (`*.ipynb` files)
 can be opened, edited, and run on the platform by double clicking on
 the file in the file browser pane.
+
+## ColabFold
+
+[ColabFold](https://github.com/sokrypton/ColabFold) is a community-driven
+update to Alphafold underpinned by [new/updated databases](https://colabfold.mmseqs.com/)
+and the MSA search process is accelerated by [MMseqs2](https://github.com/soedinglab/MMseqs2).
+Please see the colabfold directory for more information.
+
