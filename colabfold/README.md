@@ -4,7 +4,7 @@
 update to Alphafold underpinned by [new/updated databases](https://colabfold.mmseqs.com/)
 and the MSA search process is accelerated by [MMseqs2](https://github.com/soedinglab/MMseqs2).
 
-Colabfold is distributed under the 
+Colabfold is distributed under the MIT license.
 
 Colab Jupyter notebooks are available by clicking on the notebook
 links in the main ColabFold repository (e.g. `Alphafold2.ipynb`).
