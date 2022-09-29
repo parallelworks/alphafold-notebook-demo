@@ -42,6 +42,9 @@ jupyter nbconvert --log-level 0 --to script --output ${current_dir}/${bn}.tmp --
 # 2) Google Drive usage
 grep -iv drive ${current_dir}/${bn}.tmp.py | grep -iv uploaded | grep -iv google.colab | grep -iv gauth | grep -iv GoogleCredentials | grep -iv auth.authenticate_user > ${current_dir}/${bn}.py
 
+# Clean up tmp file
+rm -f ${current_dir}/${bn}.tmp.py
+
 #===========================
 # Working here to PoC conversion
 # to workflow.xml
