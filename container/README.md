@@ -15,6 +15,11 @@ to this change. `build_singularity_container.sh` automates the steps
 for including the Alphafold source code and building
 the container.
 
+## ColabFold.def
+
+Copied Singularity.def and adjusted to match the dependencies in
+the [ColabFold Alphafold2 notebook](https://github.com/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb).
+
 ## Changes to `run_singularity.py`
 
 Here, the path of the Alphafold container used by this
