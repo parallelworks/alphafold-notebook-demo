@@ -1,9 +1,12 @@
 Bootstrap: docker
-From: nvidia/cuda:11.1.1-cudnn8-runtime-ubuntu18.04
-Stage: spython-base
+From: tensorflow/tensorflow:latest-gpu-jupyter
 
+%help
+#	This Singularity definition contains a TensorFlow-gpu
+#	installation and ColabFold for use in batch mode and
+#	interactive testing. Some contents here are based on the
+#	Alphafold Container
 %files
-#. /app/alphafold
 %post
 # Copyright 2021 DeepMind Technologies Limited
 #
@@ -18,9 +21,7 @@ Stage: spython-base
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-# FROM directive resets ARGS, so we specify again (the value is retained if
-# previously set).
+#=========================================================
 
 apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 build-essential \
@@ -34,6 +35,7 @@ wget \
 && rm -rf /var/lib/apt/lists/*
 
 # Compile HHsuite from source.
+# HAVE_AVX2 is an essential flag for AMD chips
 /bin/rm -rf /tmp/hh-suite \
 && git clone --branch v3.3.0 https://github.com/soedinglab/hh-suite.git /tmp/hh-suite \
 && mkdir /tmp/hh-suite/build \
@@ -44,45 +46,51 @@ wget \
 && cd / \
 && /bin/rm -rf /tmp/hh-suite
 
+#=================================
+# Old Colabfold install location
+# Runs, but after Conda is installed,
+# the first Python path is the Python
+# in Conda, which does not
+# have ColabFold installed.  So,
+# install ColabFold into the Conda environment.
+# 
 # Install Colabfold directly (without Conda)
-pip install --upgrade pip \
-&& pip install -q --no-warn-conflicts "colabfold[alphafold-minus-jax] @ git+https://github.com/sokrypton/ColabFold" \
-&& pip install -q "jax[cuda11_cudnn805]>=0.3.8,<0.4" -f https://storage.googleapis.com/jax-releases/jax_releases.html
+#/usr/bin/python3 -m pip install --upgrade pip \
+#&& pip install -q --no-warn-conflicts "colabfold[alphafold-minus-jax] @ git+https://github.com/sokrypton/ColabFold"
+#
+## Jax 3.20 is already preinstalled in this container
+## so this additional Colabfold requirement is unnecessary.
+##pip install -q "jax[cuda11_cudnn805]>=0.3.8,<0.4" -f https://storage.googleapis.com/jax-releases/jax_releases.html
+#================================
 
 # Install Miniconda package manager.
-#wget -q -P /tmp \
-#https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-#&& bash /tmp/Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
-#&& rm /tmp/Miniconda3-latest-Linux-x86_64.sh
-
-wget -qnc https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh -bfp /usr/local 2>&1 1>/dev/null
-rm Miniconda3-latest-Linux-x86_64.sh
+wget -q -P /tmp \
+https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+&& bash /tmp/Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
+&& rm /tmp/Miniconda3-latest-Linux-x86_64.sh \
+&& PATH="/opt/conda/bin:$PATH" \
 
 # Install conda packages.
-#PATH="/opt/conda/bin:$PATH"
-conda update -qy conda
-conda install -y -c conda-forge -c bioconda \
+# Forcing install of older Python (3.7)
+# on top of newer Python (3.9 in Conda) breaks things.
+conda update -qy conda \
+&& conda install -y -c conda-forge -c bioconda \
 openmm=7.5.1 \
 pdbfixer \
-pip \
-kalign2=2.04 \
-python=3.7
+kalign2=2.04
+#python=3.7
+
+# Install Colabfold directly without Conda
+# but scripts will be in the Conda environment
+# installed above. Always run pip after conda
+# and no back and forth.
+python3 -m pip install --upgrade pip \
+&& pip install -q --no-warn-conflicts "colabfold[alphafold-minus-jax] @ git+https://github.com/sokrypton/ColabFold"
 
 ### /bin/cp -r . /app/alphafold
 
 #wget -q -P /app/alphafold/alphafold/common/ \
 #https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b647#35c4941278d92b554ec94415f8/modules/mol/alg/src/stereo_chemical_props.txt
-
-#======================
-## Install pip packages.
-## N.B. The URL specifies the list of jaxlib releases. The URL in alphafold release 2.2.2 is incorrect
-##      as it specifies the non-CUDA releases.
-#pip3 install --upgrade pip \
-#&& pip3 install -r /app/alphafold/requirements.txt \
-#&& pip3 install --upgrade jax==0.2.14 jaxlib==0.1.69+cuda111 -f \
-#https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
-#========================
 
 # Apply OpenMM patch.
 #cd /opt/conda/lib/python3.7/site-packages
@@ -91,16 +99,8 @@ python=3.7
 # Add SETUID bit to the ldconfig binary so that non-root users can run it.
 chmod u+s /sbin/ldconfig.real
 
-# Grant all users permission to read/execute in /app/alphafold
-#chmod a+rx --recursive /app/alphafold
-
 %environment
 export PATH="/opt/conda/bin:$PATH"
 %runscript
-#cd /app/alphafold
 ldconfig
-/bin/bash "$@"
-#exec python /app/alphafold/run_alphafold.py "$@"
-# %startscript
-# cd /app/alphafold
-# exec python /app/alphafold/run_alphafold.py "$@"
+/bin/bash

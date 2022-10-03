@@ -25,4 +25,4 @@ tar -xvzf v2.2.2.tar.gz
 cd alphafold-2.2.2
 
 # Build
-sudo singularity build alphafold.sif ../Singularity.def
+sudo singularity build alphafold.sif ../Alphafold.def

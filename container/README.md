@@ -1,11 +1,12 @@
 # Building an Alphafold Singularity container
 
-The `Singularity.def` definition file and the `run_singularity_container.sh`
+The `Alphafold.def` (a close copy/rename of `Singularity.def`) definition file and the `run_singularity_container.sh`
 launch script are liscensed under Apache 2.0
 based on the work of the original Alphafold authors and [David Chin at Drexel University](https://github.com/prehensilecode/alphafold_singularity.git).
 
-## Changes in `Singularity.def`
+## Changes in `Singularity.def` -> `Alphafold.def`
 
+This container is for the original Alphafold application.
 Here, I have only added `-DHAVE_AVX2=1` to the HHSUITE `cmake`
 command so that the resulting binaries are compatible with
 Intel and AMD CPUS according to this
@@ -15,10 +16,22 @@ to this change. `build_singularity_container.sh` automates the steps
 for including the Alphafold source code and building
 the container.
 
-## ColabFold.def
+## ColabFold.def and ColabFold-notebook.def
 
-Copied Singularity.def and adjusted to match the dependencies in
-the [ColabFold Alphafold2 notebook](https://github.com/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb).
+At first, copied `Alphafold.def` to `ColabFold.def`
+and adjusted to match the dependencies in the
+[ColabFold Alphafold2 notebook](https://github.com/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb).  This is a separate container to make clear the differences between Alphafold and Colabfold. This
+Singularity definition file is a work in progress any may
+not work.
+
+However, it is increasingly important to include Jupyter notebooks
+in the container so users can interactively test the compute
+environment, so a runtime-only container is not sufficient.
+I branched from the `ColabFold.def` image definition to start
+from a different base image since it appears that many of the
+dependencies in the new base image are already satisfied. I
+also solved some issues that were preventing `ColabFold.def`
+images from completing build.
 
 ## Changes to `run_singularity.py`
 
