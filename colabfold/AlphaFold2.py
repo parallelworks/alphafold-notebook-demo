@@ -55,7 +55,9 @@ elif template_mode == "custom":
   custom_template_path = f"{jobname}_template"
   os.mkdir(custom_template_path)
   use_templates = True
-    os.rename(fn, f"{jobname}_template/{fn}")
+  # Need to insert custom template file name here
+  #fn=filename
+  #os.rename(fn, f"{jobname}_template/{fn}")
 else:
   custom_template_path = None
   use_templates = False
@@ -124,14 +126,17 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 from colabfold.download import download_alphafold_params, default_data_dir
 from colabfold.utils import setup_logging
 from colabfold.batch import get_queries, run, set_model_type
-K80_chk = get_ipython().getoutput('nvidia-smi | grep "Tesla K80" | wc -l')
-if "1" in K80_chk:
-  print("WARNING: found GPU Tesla K80: limited to total length < 1000")
-  if "TF_FORCE_UNIFIED_MEMORY" in os.environ:
-    del os.environ["TF_FORCE_UNIFIED_MEMORY"]
-  if "XLA_PYTHON_CLIENT_MEM_FRACTION" in os.environ:
-    del os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"]
-
+#==================================================
+# Manually bypass GPU type check since running on
+# cluster with set hardware, not Colab.
+#K80_chk = get_ipython().getoutput('nvidia-smi | grep "Tesla K80" | wc -l')
+#if "1" in K80_chk:
+#  print("WARNING: found GPU Tesla K80: limited to total length < 1000")
+#  if "TF_FORCE_UNIFIED_MEMORY" in os.environ:
+#    del os.environ["TF_FORCE_UNIFIED_MEMORY"]
+#  if "XLA_PYTHON_CLIENT_MEM_FRACTION" in os.environ:
+#    del os.environ["XLA_PYTHON_CLIENT_MEM_FRACTION"]
+#===================================================
 from colabfold.colabfold import plot_protein
 from pathlib import Path
 import matplotlib.pyplot as plt
