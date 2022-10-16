@@ -61,10 +61,16 @@ The output file is a Python script (`.py`) based on the original Colab notebook.
 
 ## Building a ColabFold container
 
-The dependencies removed from the Colab notebook in the previous step still need to be included somewhere. For the purposes of reuse and distribution, building in a Docker container and then distributing to Singularity instances from DockerHub works well for most users and HPC clusters.
+The dependencies removed from the Colab notebook in the previous step still need to be included somewhere. Putting them in a container helps keep the software
+portable. However, I think the build is still sensitive to hardware in that efforts to build the container on nodes without GPU result in containers than cannot
+use GPUs. For now, focus on building a Conda environment that can run Colabfold on GPUs (on a GPU node) because making changes to a local Conda environment
+does not require sudo priviledges while `singularity build` does.
 
-The Python script above will still download the Alphafold coefficients (SIZE HERE) at run time. If the script is running on a cluster's shared space and the Alphafold coefficients are already downloaded, the download will not be repeated (see the section on running, below, for more detail).
 
+## Building a ColabFold Conda environment
 
+Please see `colabfold_env_build.md` for the steps necessary to build a ColabFold Conda environment.
 
 ## Running this version of ColabFold
+
+The Python script above will still download the Alphafold coefficients (SIZE HERE) at run time. If the script is running on a cluster's shared space and the Alphafold coefficients are already downloaded, the download will not be repeated (see the section on running, below, for more detail).
