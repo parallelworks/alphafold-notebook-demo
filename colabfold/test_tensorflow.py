@@ -8,10 +8,15 @@ import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 
-# Initial tests
-tf.config.experimental.list_physical_devices()
-tf.test.is_built_with_cuda()
+print("Testing TensorFlow installation")
 
+# Initial tests
+print("Step 1: Initial GPU presence tests...")
+print(tf.config.experimental.list_physical_devices())
+print(tf.config.list_physical_devices('GPU'))
+print(tf.test.is_built_with_cuda())
+
+print("Step 2: Train a NN model...")
 # Download/preprocess data
 (X_train, y_train), (X_test, y_test) = keras.datasets.cifar10.load_data()
 X_train_scaled = X_train/255
@@ -32,13 +37,14 @@ def get_model():
                   metrics=['accuracy'])
     return model
 
-# Train model on CPU - slow ~ 10 mins
+print("2a) Train model on CPU - slow ~ 1 min per epoch.")
+print("---> Skipped! <---")
 #with tf.device('/CPU:0'):
 #    model_cpu = get_model()
 #    model_cpu.fit(X_train_scaled, y_train_encoded, epochs = 10)
     #validation_data=(X_test_scaled, y_train_encoded), epochs = 10)
 
-# Train model on GPU - fast ~ 1 min
+print("2b) Train model on GPU - fast ~ few seconds per epoch, 1st epoch is longest.")
 with tf.device('/GPU:0'):
     model_gpu = get_model()
     model_gpu.fit(X_train_scaled, y_train_encoded, epochs = 10)
