@@ -59,13 +59,12 @@ git clone https://github.com/sokrypton/ColabFold
 
 The output file is a Python script (`.py`) based on the original Colab notebook.  Dependency installation steps and code that downloads results of Google Drive are removed.
 
-## Building a ColabFold container
+## Building a ColabFold container/Conda environment
 
-The dependencies removed from the Colab notebook in the previous step still need to be included somewhere. Putting them in a container helps keep the software
+The dependencies removed from the Colab notebook in the previous step still need to be included somewhere. Putting them in a container or Conda environment helps keep the software
 portable. However, I think the build is still sensitive to hardware in that efforts to build the container on nodes without GPU result in containers than cannot
 use GPUs. For now, focus on building a Conda environment that can run Colabfold on GPUs (on a GPU node) because making changes to a local Conda environment
-does not require sudo priviledges while `singularity build` does.
-
+does not require sudo priviledges while `singularity build` does.  The `ColabFold-notebook.def` Singularity definition file builds a valid container, but if run on CPU only nodes, builds a container that cannot use GPUs.
 
 ## Building a ColabFold Conda environment
 
@@ -73,4 +72,4 @@ Please see `colabfold_env_build.md` for the steps necessary to build a ColabFold
 
 ## Running this version of ColabFold
 
-The Python script above will still download the Alphafold coefficients (SIZE HERE) at run time. If the script is running on a cluster's shared space and the Alphafold coefficients are already downloaded, the download will not be repeated (see the section on running, below, for more detail).
+The Python script above will still download the Alphafold coefficients (~3.5GB) at run time. If the script is running on a cluster's shared space and the Alphafold coefficients are already downloaded, the download will not be repeated (see the section on running, below, for more detail).

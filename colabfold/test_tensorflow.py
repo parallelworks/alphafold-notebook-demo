@@ -24,10 +24,38 @@ X_test_scaled = X_test/255
 y_train_encoded = keras.utils.to_categorical(y_train, num_classes = 10, dtype = 'float32')
 y_test_encoded = keras.utils.to_categorical(y_test, num_classes = 10, dtype = 'float32')
 
+print('Data shapes:')
+X_train_scaled.shape
+y_train_encoded.shape
+
 # Define the model
 def get_model():
     model = keras.Sequential([
         keras.layers.Flatten(input_shape=(32,32,3)),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
+        keras.layers.Dense(3000, activation='relu'),
         keras.layers.Dense(3000, activation='relu'),
         keras.layers.Dense(1000, activation='relu'),
         keras.layers.Dense(10, activation='sigmoid')
@@ -39,6 +67,7 @@ def get_model():
 
 print("2a) Train model on CPU - slow ~ 1 min per epoch.")
 print("---> Skipped! <---")
+print("With the 18 additional layers, takes closer to 30 min per epoch!")
 #with tf.device('/CPU:0'):
 #    model_cpu = get_model()
 #    model_cpu.fit(X_train_scaled, y_train_encoded, epochs = 10)
