@@ -21,8 +21,8 @@ print("Step 2: Train a NN model...")
 (X_train, y_train), (X_test, y_test) = keras.datasets.cifar10.load_data()
 X_train_scaled = X_train/255
 X_test_scaled = X_test/255
-y_train_encoded = keras.utils.to_categorical(y_train, num_classes = 10, dtype = 'float32')
-y_test_encoded = keras.utils.to_categorical(y_test, num_classes = 10, dtype = 'float32')
+y_train_encoded = keras.utils.to_categorical(y_train, num_classes = 10) #, dtype = 'float32')
+y_test_encoded = keras.utils.to_categorical(y_test, num_classes = 10) #, dtype = 'float32')
 
 print('Data shapes:')
 X_train_scaled.shape
